@@ -249,7 +249,7 @@ GameManager.prototype.move = function (direction) {
     if (!this.won && this.timerStart == false){
       this.timerStart = true;
     }
-    if (this.over){
+    if (this.win || this.over){
       this.timerStart = false;
     }
 
