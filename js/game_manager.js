@@ -246,11 +246,11 @@ GameManager.prototype.move = function (direction) {
       this.over = true; // Game over!
     }
 
-    if (!this.won && this.timerStart == false){
-      this.timerStart = true;
-    }
-    if (this.win || this.over){
+    if (this.won || this.over){
       this.timerStart = false;
+    }
+    else {
+      this.timerStart = true;
     }
 
     this.actuate();
