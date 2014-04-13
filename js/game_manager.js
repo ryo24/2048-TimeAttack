@@ -47,20 +47,25 @@ GameManager.prototype.setup = function () {
     this.over        = previousState.over;
     this.won         = previousState.won;
     this.keepPlaying = previousState.keepPlaying;
+    this.timerStart  = previousState.timerStart;
     this.time        = previousState.time;
+    this.timeMils    = previousState.timeMils;
+    this.previousTime= new Date().getTime();
   } else {
     this.grid        = new Grid(this.size);
     this.score       = 0;
     this.over        = false;
     this.won         = false;
     this.keepPlaying = false;
-    this.time        = 0
+    this.timerStart  = false;
+    this.time        = 0;
+    this.timeMils    = 0;
     // Add the initial tiles
     this.addStartTiles();
+    this.previousTime = -1;
   }
 
-  this.previousTime = new Date().getTime();
-
+  this.gameLoop = setInterval(function(){game.actuateTime()}, 100);
   // Update the actuator
   this.actuate();
 };
@@ -91,9 +96,55 @@ GameManager.prototype.addRandomTile = function (number) {
 
 // Sends the updated grid to the actuator
 GameManager.prototype.actuate = function () {
+
+  this.actuateUpdate();
+
+  this.actuator.actuate(this.grid, {
+    score:      this.score,
+    time:       this.time,
+    over:       this.over,
+    won:        this.won,
+    bestScore:  this.storageManager.getBestScore(),
+    bestTime:   this.storageManager.getBestTime(),
+    terminated: this.isGameTerminated()
+  });
+};
+
+GameManager.prototype.actuateTime = function () {
+  this.actuateUpdate();
+
+  this.actuator.actuateTime({
+    score:      this.score,
+    time:       this.time,
+    over:       this.over,
+    won:        this.won,
+    bestScore:  this.storageManager.getBestScore(),
+    bestTime:   this.storageManager.getBestTime(),
+    terminated: this.isGameTerminated()
+  });
+}
+
+GameManager.prototype.actuateUpdate = function() {
   if (this.storageManager.getBestScore() < this.score) {
     this.storageManager.setBestScore(this.score);
   }
+
+  if (this.won && this.storageManager.getBestTime() > this.time) {
+    this.storageManager.setBestTime(this.time);
+  }
+
+  var nowTime = new Date().getTime();
+  if (this.timerStart === true) {
+    if (this.previousTime != -1) {
+      this.timeMils += nowTime - this.previousTime;
+      this.time = Math.floor(this.timeMils / 100);
+    }
+    else{
+      this.timeMils = 0;
+      this.time = 0;
+    }
+  }
+  this.previousTime = nowTime
 
   // Clear the state when the game is over (game over only, not win)
   if (this.over) {
@@ -102,22 +153,16 @@ GameManager.prototype.actuate = function () {
     this.storageManager.setGameState(this.serialize());
   }
 
-  this.actuator.actuate(this.grid, {
-    score:      this.score,
-    over:       this.over,
-    won:        this.won,
-    bestScore:  this.storageManager.getBestScore(),
-    terminated: this.isGameTerminated()
-  });
-
-};
+}
 
 // Represent the current game as an object
 GameManager.prototype.serialize = function () {
   return {
     grid:        this.grid.serialize(),
     score:       this.score,
+    timerStart:  this.timerStart,
     time:        this.time,
+    timeMils:    this.timeMils,
     over:        this.over,
     won:         this.won,
     keepPlaying: this.keepPlaying
@@ -199,6 +244,13 @@ GameManager.prototype.move = function (direction) {
 
     if (!this.movesAvailable()) {
       this.over = true; // Game over!
+    }
+
+    if (!this.won && this.timerStart == false){
+      this.timerStart = true;
+    }
+    if (this.over){
+      this.timerStart = false;
     }
 
     this.actuate();

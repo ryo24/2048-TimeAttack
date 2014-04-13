@@ -5,6 +5,7 @@ function HTMLActuator() {
   this.messageContainer = document.querySelector(".game-message");
 
   this.score = 0;
+  this.time  = 0;
 }
 
 HTMLActuator.prototype.actuate = function (grid, metadata) {
@@ -21,8 +22,9 @@ HTMLActuator.prototype.actuate = function (grid, metadata) {
       });
     });
 
-    self.updateScore(metadata.score);
-    self.updateBestScore(metadata.bestScore);
+    //self.updateScore(metadata.score);
+    //self.updateBestScore(metadata.bestScore);
+    self.actuateTime(metadata);
 
     if (metadata.terminated) {
       if (metadata.over) {
@@ -34,6 +36,12 @@ HTMLActuator.prototype.actuate = function (grid, metadata) {
 
   });
 };
+
+HTMLActuator.prototype.actuateTime = function (metadata) {
+  var self = this;
+  self.updateTime(metadata.time);
+  self.updateBestTime(metadata.bestTime);
+}
 
 // Continues the game (both restart and keep playing)
 HTMLActuator.prototype.continueGame = function () {
@@ -104,6 +112,7 @@ HTMLActuator.prototype.positionClass = function (position) {
 };
 
 HTMLActuator.prototype.updateScore = function (score) {
+  return;
   this.clearContainer(this.scoreContainer);
 
   var difference = score - this.score;
@@ -120,8 +129,26 @@ HTMLActuator.prototype.updateScore = function (score) {
   }
 };
 
+
+HTMLActuator.prototype.updateTime = function (time) {
+  this.clearContainer(this.scoreContainer);
+
+  if (time < 10){
+    this.time = "0." + time;
+  }
+  else{
+    this.time = String(time).replace(/(\d)$/g,".$1");
+  }
+  this.scoreContainer.textContent = this.time;
+}
+
 HTMLActuator.prototype.updateBestScore = function (bestScore) {
-  this.bestContainer.textContent = bestScore;
+  //this.bestContainer.textContent = bestScore;
+};
+
+
+HTMLActuator.prototype.updateBestTime = function (bestTime) {
+  this.bestContainer.textContent = bestTime.replace(/(\d)$/g,".$1");
 };
 
 HTMLActuator.prototype.message = function (won) {
