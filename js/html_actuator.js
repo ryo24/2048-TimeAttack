@@ -148,7 +148,7 @@ HTMLActuator.prototype.updateBestScore = function (bestScore) {
 
 
 HTMLActuator.prototype.updateBestTime = function (bestTime) {
-  this.bestContainer.textContent = bestTime.replace(/(\d)$/g,".$1");
+  this.bestContainer.textContent = String(bestTime).replace(/(\d)$/g,".$1");
 };
 
 HTMLActuator.prototype.message = function (won) {
