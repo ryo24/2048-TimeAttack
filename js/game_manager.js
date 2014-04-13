@@ -47,16 +47,19 @@ GameManager.prototype.setup = function () {
     this.over        = previousState.over;
     this.won         = previousState.won;
     this.keepPlaying = previousState.keepPlaying;
+    this.time        = previousState.time;
   } else {
     this.grid        = new Grid(this.size);
     this.score       = 0;
     this.over        = false;
     this.won         = false;
     this.keepPlaying = false;
-
+    this.time        = 0
     // Add the initial tiles
     this.addStartTiles();
   }
+
+  this.previousTime = new Date().getTime();
 
   // Update the actuator
   this.actuate();
@@ -67,10 +70,6 @@ GameManager.prototype.addStartTiles = function () {
 
   this.addRandomTile(1024);
   this.addRandomTile(512);
-  /*
-for (var i = 0; i < this.startTiles; i++) {
-    this.addRandomTile();
-  }*/
 };
 
 // Adds a tile in a random position
@@ -118,6 +117,7 @@ GameManager.prototype.serialize = function () {
   return {
     grid:        this.grid.serialize(),
     score:       this.score,
+    time:        this.time,
     over:        this.over,
     won:         this.won,
     keepPlaying: this.keepPlaying
