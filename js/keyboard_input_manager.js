@@ -31,7 +31,7 @@ KeyboardInputManager.prototype.emit = function (event, data) {
   }
 };
 
-var keyMap = {
+KeyboardInputManager.prototype.keyMap = {
   38: 0, // Up
   39: 1, // Right
   40: 2, // Down
@@ -49,7 +49,7 @@ var keyMap = {
 KeyboardInputManager.prototype.listen = function () {
   var self = this;
 
-
+  var map = this.keyMap;
   // Respond to direction keys
   document.addEventListener("keydown", function (event) {
     var modifiers = event.altKey || event.ctrlKey || event.metaKey ||
