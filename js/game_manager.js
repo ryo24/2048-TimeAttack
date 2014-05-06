@@ -5,6 +5,7 @@ function GameManager(size, InputManager, Actuator, StorageManager) {
   this.actuator       = new Actuator;
 
   this.startTiles     = 2;
+  this.shortMode      = true;
 
   this.inputManager.on("move", this.move.bind(this));
   this.inputManager.on("restart", this.restart.bind(this));
@@ -77,8 +78,14 @@ GameManager.prototype.setup = function () {
 // Set up the initial tiles to start the game with
 GameManager.prototype.addStartTiles = function () {
 
-  this.addRandomTile(1024);
-  this.addRandomTile(512);
+  if (this.shortMode) {
+    this.addRandomTile(1024);
+    this.addRandomTile(512);
+  }
+  else {
+    this.addRandomTile();
+    this.addRandomTile();
+  }
 };
 
 // Adds a tile in a random position
