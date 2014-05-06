@@ -70,7 +70,7 @@ KeyboardInputManager.prototype.listen = function () {
   });
 
   // Respond to button presses
-  //this.bindButtonPress(".retry-button", this.restart);
+  this.bindButtonPress(".retry-button", this.restart);
   this.bindButtonPress(".short-button", this.shortGame);
   this.bindButtonPress('.long-button', this.longGame);
   //this.bindButtonPress(".keep-playing-button", this.keepPlaying);
@@ -127,6 +127,11 @@ KeyboardInputManager.prototype.listen = function () {
       self.emit("move", absDx > absDy ? (dx > 0 ? 1 : 3) : (dy > 0 ? 2 : 0));
     }
   });
+};
+
+KeyboardInputManager.prototype.restart = function (event) {
+  event.preventDefault();
+  this.emit("restart");
 };
 
 KeyboardInputManager.prototype.shortGame = function (event) {
