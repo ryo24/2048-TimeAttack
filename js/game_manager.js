@@ -11,11 +11,24 @@ function GameManager(size, InputManager, Actuator, StorageManager) {
   this.inputManager.on("restart", this.restart.bind(this));
   this.inputManager.on("keepPlaying", this.keepPlaying.bind(this));
   this.inputManager.on('changeMode', this.changeMode.bind(this));
+  this.inputManager.on('shortGame', this.shortGame.bind(this));
+  this.inputManager.on('longGame', this.longGame.bind(this));
   this.setup();
 }
 
 GameManager.prototype.changeMode = function () {
-  
+  this.shortMode = !this.shortMode;
+  this.restart();
+}
+
+GameManager.prototype.shortGame = function () {
+  this.shortMode = true;
+  this.restart();
+}
+
+GameManager.prototype.longGame = function () {
+  this.shortMode = false;
+  this.restart();
 }
 
 // Restart the game

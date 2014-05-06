@@ -31,7 +31,7 @@ KeyboardInputManager.prototype.emit = function (event, data) {
   }
 };
 
-KeyboardInputManager.prototype.keyMap = {
+var keyMap = {
   38: 0, // Up
   39: 1, // Right
   40: 2, // Down
@@ -49,7 +49,7 @@ KeyboardInputManager.prototype.keyMap = {
 KeyboardInputManager.prototype.listen = function () {
   var self = this;
 
-  var map = this.keyMap;
+
   // Respond to direction keys
   document.addEventListener("keydown", function (event) {
     var modifiers = event.altKey || event.ctrlKey || event.metaKey ||
@@ -70,9 +70,9 @@ KeyboardInputManager.prototype.listen = function () {
   });
 
   // Respond to button presses
-  this.bindButtonPress(".retry-button", this.restart);
-  this.bindButtonPress(".restart-button", this.restart);
-  this.bindButtonPress('.change-mode-button', this.changeMode);
+  //this.bindButtonPress(".retry-button", this.restart);
+  this.bindButtonPress(".short-button", this.shortGame);
+  this.bindButtonPress('.long-button', this.longGame);
   //this.bindButtonPress(".keep-playing-button", this.keepPlaying);
 
   // Respond to swipe events
@@ -129,9 +129,14 @@ KeyboardInputManager.prototype.listen = function () {
   });
 };
 
-KeyboardInputManager.prototype.restart = function (event) {
+KeyboardInputManager.prototype.shortGame = function (event) {
   event.preventDefault();
-  this.emit("restart");
+  this.emit("shortGame");
+};
+
+KeyboardInputManager.prototype.longGame = function (event) {
+  event.preventDefault();
+  this.emit("longGame");
 };
 
 KeyboardInputManager.prototype.changeMode = function (event) {
@@ -149,3 +154,4 @@ KeyboardInputManager.prototype.bindButtonPress = function (selector, fn) {
   button.addEventListener("click", fn.bind(this));
   button.addEventListener(this.eventTouchend, fn.bind(this));
 };
+
