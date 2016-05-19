@@ -94,6 +94,7 @@ GameManager.prototype.addStartTiles = function () {
   if (this.shortMode) {
     this.addRandomTile(1024);
     this.addRandomTile(512);
+    this.addRandomTile(512);
   }
   else {
     this.addRandomTile();
